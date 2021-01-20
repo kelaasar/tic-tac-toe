@@ -6,10 +6,6 @@ def main():
              [0, 0, 0],
              [0, 0, 0]]
 
-    reset = [[0, 0, 0],
-             [0, 0, 0],
-             [0, 0, 0]]
-
     end = False
 
     while not end:
@@ -20,34 +16,41 @@ def main():
         print()
         if finished == "Yes" or finished == "YES" or finished == "y" or finished == "Y" or finished == "yes":
             end = True
-        board = reset
+        board = [[0, 0, 0],
+                 [0, 0, 0],
+                 [0, 0, 0]]
+
     print()
     print("-------Program Terminated-------")
 
 
 def game(board):
     printBoard(board)
-    player1_move = 0
-    player2_move = 0
     win = False
 
     while not win:
         tie = True
         x = 0
         y = 0
+
         move = input('Player 1, enter a coordinate in this form: "0, 1": ')
-        # if len(move) != 4 or move[0] != 0 and
+        move = move.strip()
+
+        try:
+            x = int(move[0])
+            y = int(move[3])
+        except:
+            print()
+            move = input('Invalid input. Enter the coordinates in the following format: "0, 1": ')
+
+        move = errorChecker(move, board, x, y)
+
         x = int(move[0])
         y = int(move[3])
 
-        while board[x][y] != 0:
-            print()
-            move = input('That spot is already taken. Enter another coordinate: ')
-            x = int(move[0])
-            y = int(move[3])
         board[x][y] = 1
         printBoard(board)
-        win = winChecker(board, player1_move)
+        win = winChecker(board)
 
         for i in range(0, 3):
             for j in range(0, 3):
@@ -67,18 +70,26 @@ def game(board):
             print("=======================")
             return
 
+        x = 0
+        y = 0
         move = input('Player 2, enter a coordinate in this form: "0, 1": ')
+        move = move.strip()
+
+        try:
+            x = int(move[0])
+            y = int(move[3])
+        except:
+            print()
+            move = input('Invalid input. Enter the coordinates in the following format: "0, 1": ')
+
+        move = errorChecker(move, board, x, y)
+
         x = int(move[0])
         y = int(move[3])
 
-        while board[x][y] != 0:
-            print()
-            move = input('That spot is already taken. Enter another coordinate: ')
-            x = int(move[0])
-            y = int(move[3])
         board[x][y] = 2
         printBoard(board)
-        win = winChecker(board, player2_move)
+        win = winChecker(board)
 
         for i in range(0, 3):
             for j in range(0, 3):
@@ -108,7 +119,21 @@ def printBoard(board):
     print()
 
 
-def winChecker(board, player):
+def errorChecker(move, board, x, y):
+    while not len(move) == 4 or move[0] not in ["0", "1", "2"] or not move[1] == "," or not move[2] == " " or \
+            move[3] not in ["0", "1", "2"] or move == "" or board[x][y] != 0:
+        print()
+        move = input('Invalid input. Enter the coordinates in the following format: "0, 1": ')
+        try:
+            x = int(move[0])
+            y = int(move[3])
+        except:
+            move = input('Invalid input. Enter the coordinates in the following format: "0, 1": ')
+
+    return move
+
+
+def winChecker(board):
     if board[0][0] == board[0][1] == board[0][2] and board[0][0] != 0:
         return True
 
